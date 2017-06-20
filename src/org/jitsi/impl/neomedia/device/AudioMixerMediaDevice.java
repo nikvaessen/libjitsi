@@ -147,6 +147,11 @@ public class AudioMixerMediaDevice
         streamAudioLevelListeners
             = new HashMap<ReceiveStream, AudioLevelEventDispatcher>();
 
+    /**
+     * The <tt>RawStreamListener</tt> which gets notified when this
+     * <tt>MediaDevice</tt> reads from the <tt>CaptureDevice</tt> to the
+     * <tt>AudioMixer</tt>
+     */
     private RawStreamListener rawStreamListener;
 
     /**
@@ -382,30 +387,16 @@ public class AudioMixerMediaDevice
                                 streamEventDispatcher.addData(buffer);
                             }
 
-                            RawStreamListener rawStreamListener = AudioMixerMediaDevice.this.rawStreamListener;
+                            RawStreamListener rawStreamListener =
+                                AudioMixerMediaDevice.this.rawStreamListener;
+
                             if ((rawStreamListener != null)
                                 && !buffer.isDiscard()
                                 && (buffer.getLength() > 0)
                                 && (buffer.getData() != null))
                             {
-                                rawStreamListener.samplesRead(receiveStream, buffer);
-
-                                // Example on how to handle a ReceiveStream and Buffer:
-
-                                // We can match an SSRC to a conference participant based on signaling
-                                long ssrc = receiveStream.getSSRC();
-
-                                // We expect some sort of raw audio here, probably
-                                // pcm at 48000Hz. The Buffer's format should tell
-                                // us what it is.
-                                Format format = buffer.getFormat();
-                                AudioFormat audioFormat = (AudioFormat) format;
-                                boolean isPCM16khz
-                                    = format.getEncoding().equals("something_pcm?")
-                                    && audioFormat.getSampleRate() == 16000;
-
-                                // The Buffer's data is actually always a byte[], OK to cast:
-                                byte[] data = (byte[]) buffer.getData();
+                                rawStreamListener.samplesRead(
+                                    receiveStream, buffer);
                             }
                         }
                     }
@@ -521,6 +512,12 @@ public class AudioMixerMediaDevice
         return device.getSupportedFormats();
     }
 
+    /**
+     * Set the listener which gets notified when this <tt>MediaDevice</tt>
+     * reads data from a <tt>ReceiveStream</tt>
+     *
+     * @param listener the <tt>RawStreamListener</tt> which gets notified
+     */
     public void setRawStreamListener(RawStreamListener listener)
     {
         this.rawStreamListener = listener;
@@ -1467,8 +1464,4 @@ public class AudioMixerMediaDevice
             return getAudioMixer().getTranscodingDataSource(inputDataSource);
     }
 
-    public interface RawStreamListener
-    {
-        void samplesRead(ReceiveStream receiveStream, Buffer buffer);
-    }
 }
