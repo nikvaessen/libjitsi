@@ -22,7 +22,6 @@ import java.util.*;
 
 import javax.media.*;
 import javax.media.control.*;
-import javax.media.format.*;
 import javax.media.protocol.*;
 import javax.media.rtp.*;
 
@@ -148,11 +147,11 @@ public class AudioMixerMediaDevice
             = new HashMap<ReceiveStream, AudioLevelEventDispatcher>();
 
     /**
-     * The <tt>RawStreamListener</tt> which gets notified when this
+     * The <tt>ReceiveStreamBufferListener</tt> which gets notified when this
      * <tt>MediaDevice</tt> reads from the <tt>CaptureDevice</tt> to the
      * <tt>AudioMixer</tt>
      */
-    private RawStreamListener rawStreamListener;
+    private ReceiveStreamBufferListener receiveStreamBufferListener;
 
     /**
      * Initializes a new <tt>AudioMixerMediaDevice</tt> instance which is to
@@ -387,15 +386,15 @@ public class AudioMixerMediaDevice
                                 streamEventDispatcher.addData(buffer);
                             }
 
-                            RawStreamListener rawStreamListener =
-                                AudioMixerMediaDevice.this.rawStreamListener;
+                            ReceiveStreamBufferListener receiveStreamBufferListener =
+                                AudioMixerMediaDevice.this.receiveStreamBufferListener;
 
-                            if ((rawStreamListener != null)
+                            if ((receiveStreamBufferListener != null)
                                 && !buffer.isDiscard()
                                 && (buffer.getLength() > 0)
                                 && (buffer.getData() != null))
                             {
-                                rawStreamListener.samplesRead(
+                                receiveStreamBufferListener.bufferReceived(
                                     receiveStream, buffer);
                             }
                         }
@@ -516,11 +515,11 @@ public class AudioMixerMediaDevice
      * Set the listener which gets notified when this <tt>MediaDevice</tt>
      * reads data from a <tt>ReceiveStream</tt>
      *
-     * @param listener the <tt>RawStreamListener</tt> which gets notified
+     * @param listener the <tt>ReceiveStreamBufferListener</tt> which gets notified
      */
-    public void setRawStreamListener(RawStreamListener listener)
+    public void setReceiveStreamBufferListener(ReceiveStreamBufferListener listener)
     {
-        this.rawStreamListener = listener;
+        this.receiveStreamBufferListener = listener;
     }
 
     /**

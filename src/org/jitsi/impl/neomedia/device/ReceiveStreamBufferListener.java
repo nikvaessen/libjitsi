@@ -10,7 +10,7 @@ import javax.media.rtp.ReceiveStream;
  *  @author Boris Grozev
  *  @author Nik Vaessen
  */
-public interface RawStreamListener
+public interface ReceiveStreamBufferListener
 {
     /**
      * Notify the listener that the data in the <tt>Buffer</tt> (as byte[])
@@ -20,5 +20,5 @@ public interface RawStreamListener
      *                      packet(s)
      * @param buffer the <tt>Buffer</tt> into which the packets has been read
      */
-    void samplesRead(ReceiveStream receiveStream, Buffer buffer);
+    void bufferReceived(ReceiveStream receiveStream, Buffer buffer);
 }
